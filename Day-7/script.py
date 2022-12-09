@@ -5,10 +5,10 @@ class Node:
         self.parent = parent
         self.name = name
         self.children = []
-        self.size = size
+        self._size = size
     
     def __str__(self) -> str:
-        return f'{self.name} {self.actual_size()}'
+        return f'{self.name} {self.size()}'
     
     def cd(self, dir_name):
         if dir_name == self.name:
@@ -17,13 +17,13 @@ class Node:
             if x.name == dir_name:
                 return x
     
-    def actual_size(self):
-        if self.size != 0:
-            return self.size
+    def size(self):
+        if self._size != 0:
+            return self._size
         else:
             children_size = 0
             for child in self.children:
-                children_size += child.actual_size()
+                children_size += child.size()
             return children_size
 
 if __name__ == "__main__":

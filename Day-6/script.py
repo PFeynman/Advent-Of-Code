@@ -19,3 +19,4 @@ if __name__ == "__main__":
         message = input.read()
     
     print(part_1(message))
+    # Part 1 and 2 are the same with the difference of chunk size

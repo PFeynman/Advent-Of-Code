@@ -1,11 +1,11 @@
 import re
-import time
 
 class Node:
-    def __init__(self, parent, name, size = 0):
+    def __init__(self, parent, name, type = 'd', size = 0):
         self.parent = parent
         self.name = name
         self.children = []
+        self.type = type
         self._size = size
     
     def __str__(self) -> str:
@@ -25,11 +25,10 @@ class Node:
                 children_size += child.size()
             return children_size
     
-    def traverse(self):
+    def traverse(self, level = 0):
         for child in self.children:
-            child.traverse()
-
-        print(self)
+            child.traverse(level + 1)
+        print(' ' * level + str(self))
     
     def is_leaf(self):
         return len(self.children) == 0
@@ -44,30 +43,55 @@ def part_1(node):
 
     return sum
 
+def get_directory_sizes(directory):
+    sizes = []
+    sizes.append(directory.size())
+
+    child_dirs = [x for x in directory.children if x.type == 'd']
+    for child in child_dirs:
+        sizes.extend(get_directory_sizes(child))
+    
+    return sizes
+
+def part_2(node):
+    fs_size = 70000000
+    update_size = 30000000
+    free_space = fs_size - node.size()
+    required_space = update_size - free_space
+    current_node = node
+
+    dirSizes = get_directory_sizes(current_node)
+    dirSizes.sort()
+
+    for size in dirSizes:
+        if size >= required_space:
+            return size
+
 if __name__ == "__main__":
     cd_pattern = '(\$ cd) (.+)'
     file_pattern = '(\d+) (\w+(\.\w+)?)'
     dir_pattern = 'dir (\w+)'
 
-    with open('input.txt', 'r') as input:
+    with open('_input.txt', 'r') as input:
         console = [i for i in input.readlines()]
 
     fs = Node(None, '/')
-    current_dir = fs
-
+    current_node = fs
+    level = 0
     for line in console:
         if line[0] == '$':
-            if (m := re.search(cd_pattern, line)) is not None:
+            if (m := re.search(cd_pattern, line)) != None:
                 if m.group(2) == '/':
                     continue
-                current_dir = current_dir.parent if m.group(2) == '..' else current_dir.cd(m.group(2))
+                current_node = current_node.parent if m.group(2) == '..' else current_node.cd(m.group(2))
         else:
-            if (m:= re.search(file_pattern, line)) is not None:
-                new_node = Node(current_dir, m.group(2), int(m.group(1)))
+            if (m:= re.search(file_pattern, line)) != None:
+                new_node = Node(current_node, m.group(2), 'f', int(m.group(1)))
             else:
                 m = re.search(dir_pattern, line)
-                new_node = Node(current_dir, m.group(1))
+                new_node = Node(current_node, m.group(1))
             
-            current_dir.children.append(new_node)
+            current_node.children.append(new_node)
     
-    print(part_1(fs))
+    print(part_2(fs))
+    

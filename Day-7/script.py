@@ -1,4 +1,5 @@
 import re
+import time
 
 class Node:
     def __init__(self, parent, name, size = 0):
@@ -11,8 +12,6 @@ class Node:
         return f'{self.name} {self.size()}'
     
     def cd(self, dir_name):
-        if dir_name == self.name:
-            return self
         for x in self.children:
             if x.name == dir_name:
                 return x
@@ -25,6 +24,25 @@ class Node:
             for child in self.children:
                 children_size += child.size()
             return children_size
+    
+    def traverse(self):
+        for child in self.children:
+            child.traverse()
+
+        print(self)
+    
+    def is_leaf(self):
+        return len(self.children) == 0
+
+def part_1(node):
+    sum = 0
+    if node.size() <= 100000 and not node.is_leaf():
+        sum += node.size()
+
+    for child in node.children:
+        sum += part_1(child)
+
+    return sum
 
 if __name__ == "__main__":
     cd_pattern = '(\$ cd) (.+)'
@@ -40,6 +58,8 @@ if __name__ == "__main__":
     for line in console:
         if line[0] == '$':
             if (m := re.search(cd_pattern, line)) is not None:
+                if m.group(2) == '/':
+                    continue
                 current_dir = current_dir.parent if m.group(2) == '..' else current_dir.cd(m.group(2))
         else:
             if (m:= re.search(file_pattern, line)) is not None:
@@ -47,4 +67,7 @@ if __name__ == "__main__":
             else:
                 m = re.search(dir_pattern, line)
                 new_node = Node(current_dir, m.group(1))
+            
             current_dir.children.append(new_node)
+    
+    print(part_1(fs))

@@ -52,6 +52,44 @@ def part_1(grid):
 
     return visible_count
 
+def part_2(grid):
+    grid_size = len(grid)
+
+    trees_visible = [[0 for i in range(grid_size)] for j in range(grid_size)]
+    
+    for row in range(grid_size):
+        for col in range(grid_size):
+            # Check for top
+            for i in range(row - 1, -1, -1):
+                if grid[row][col] <= grid[i][col]:
+                    trees_visible[row][col] += 1
+                    if grid[row][col] == grid[i][col]:
+                        continue
+                continue
+            # Check for left
+            for i in range(col - 1, -1, -1):
+                if grid[row][col] <= grid[row][i]:
+                    trees_visible[row][col] += 1
+                    if grid[row][col] == grid[row][i]:
+                        continue
+                continue
+            # Check for bottom
+            for i in range(row + 1, grid_size):
+                if grid[row][col] <= grid[i][col]:
+                    trees_visible[row][col] += 1
+                    if grid[row][col] == grid[i][col]:
+                        continue
+                continue
+            # Check for right
+            for i in range(col + 1, grid_size):
+                if grid[row][col] <= grid[row][i]:
+                    trees_visible[row][col] += 1
+                    if grid[row][col] == grid[row][i]:
+                        continue
+                continue
+
+    return None
+
 if __name__ == "__main__":
     with open('input.txt', 'r') as input:
         grid = [i.rstrip() for i in input.readlines()]

@@ -54,46 +54,47 @@ def part_1(grid):
 
 def part_2(grid):
     grid_size = len(grid)
-
-    trees_visible = [[0 for i in range(grid_size)] for j in range(grid_size)]
+    max_trees_visible = 0
     
     for row in range(grid_size):
         for col in range(grid_size):
+            trees_visible = 1
             # Check for top
+            visibles = 0
             for i in range(row - 1, -1, -1):
+                visibles += 1
                 if grid[row][col] <= grid[i][col]:
-                    trees_visible[row][col] += 1
-                    if grid[row][col] == grid[i][col]:
-                        continue
-                continue
+                    break
+            trees_visible *= visibles
             # Check for left
+            visibles = 0
             for i in range(col - 1, -1, -1):
+                visibles += 1
                 if grid[row][col] <= grid[row][i]:
-                    trees_visible[row][col] += 1
-                    if grid[row][col] == grid[row][i]:
-                        continue
-                continue
+                    break
+            trees_visible *= visibles
             # Check for bottom
+            visibles = 0
             for i in range(row + 1, grid_size):
+                visibles += 1
                 if grid[row][col] <= grid[i][col]:
-                    trees_visible[row][col] += 1
-                    if grid[row][col] == grid[i][col]:
-                        continue
-                continue
+                    break
+            trees_visible *= visibles
             # Check for right
+            visibles = 0
             for i in range(col + 1, grid_size):
+                visibles += 1
                 if grid[row][col] <= grid[row][i]:
-                    trees_visible[row][col] += 1
-                    if grid[row][col] == grid[row][i]:
-                        continue
-                continue
+                    break
+            trees_visible *= visibles
 
-    return None
+            if trees_visible > max_trees_visible:
+                max_trees_visible = trees_visible
+
+    return max_trees_visible
 
 if __name__ == "__main__":
     with open('input.txt', 'r') as input:
         grid = [i.rstrip() for i in input.readlines()]
-    
-    grid_size = len(grid)
 
-    print(part_1(grid))
+    print(part_2(grid))

@@ -72,5 +72,7 @@ func main() {
 	fileName := "input.txt"
 	text := GetFileContent(fileName)
 	memory := strings.Join(text, "")
-	fmt.Println(SolutionTwo(memory))
+
+	fmt.Printf("Solution One: %d\n", SolutionOne(memory))
+	fmt.Printf("Solution Two: %d\n", SolutionTwo(memory))
 }

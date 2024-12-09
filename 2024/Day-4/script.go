@@ -126,5 +126,6 @@ func main() {
 	fileName := "input.txt"
 	text := GetFileContent(fileName)
 
-	fmt.Println(SolutionTwo(text))
+	fmt.Printf("Solution One: %d\n", SolutionOne(text))
+	fmt.Printf("Solution Two: %d\n", SolutionTwo(text))
 }

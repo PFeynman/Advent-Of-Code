@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"slices"
 	"strconv"
@@ -35,8 +36,65 @@ func ArrayAtoi(array []string) (result []int) {
 	return
 }
 
+func SolutionOne(rules map[int][]int, updates [][]int) int {
+	var constraints []int
+	var correct_updates [][]int
+	var valid bool
+	sum := 0
+	for _, update := range updates {
+		valid = true
+		for i, page := range update {
+			constraints = rules[page]
+			for _, constraint := range constraints {
+				if slices.Index(update, constraint) >= 0 && slices.Index(update, constraint) < i {
+					valid = false
+					break
+				}
+			}
+			if !valid {
+				break
+			}
+		}
+		if valid {
+			correct_updates = append(correct_updates, update)
+			sum += update[int(math.Floor(float64(len(update)/2)))]
+		}
+	}
+
+	return sum
+}
+
+func SolutionTwo(rules map[int][]int, updates [][]int) int {
+	var constraints []int
+	var incorrect_updates [][]int
+	var valid bool
+	var index int
+
+	sum := 0
+	for _, update := range updates {
+		valid = true
+		for i, page := range update {
+			constraints = rules[page]
+			for _, constraint := range constraints {
+				index = slices.Index(update, constraint)
+				if index >= 0 && index < i {
+					update = slices.Delete(update, i, i+1)
+					update = slices.Insert(update, index, page)
+					valid = false
+					i = index
+				}
+			}
+		}
+		if !valid {
+			incorrect_updates = append(incorrect_updates, update)
+			sum += update[int(math.Floor(float64(len(update)/2)))]
+		}
+	}
+	return sum
+}
+
 func main() {
-	fileName := "input_test.txt"
+	fileName := "input.txt"
 	text := GetFileContent(fileName)
 
 	rules := make(map[int][]int)
@@ -57,31 +115,7 @@ func main() {
 			updates = append(updates, ArrayAtoi(strings.Split(line, ",")))
 		}
 	}
-	fmt.Println(rules)
-	var constraints []int
-	var correct_updates [][]int
-	var valid bool
-	for _, update := range updates {
-		fmt.Println(update)
-		valid = true
-		for i, page := range update {
-			fmt.Println(page)
-			constraints = rules[page]
-			for _, constraint := range constraints {
-				fmt.Printf("Constrain %d, %d\n", constraint, slices.Index(update, constraint))
-				if slices.Index(update, constraint) >= 0 && slices.Index(update, constraint) < i {
-					valid = false
-					break
-				}
-			}
-			if !valid {
-				break
-			}
-		}
-		if valid {
-			correct_updates = append(correct_updates, update)
-		}
-	}
 
-	fmt.Println(correct_updates)
+	fmt.Printf("Solution One: %d\n", SolutionOne(rules, updates))
+	fmt.Printf("Solution Two: %d\n", SolutionTwo(rules, updates))
 }

@@ -1,3 +1,5 @@
+from itertools import combinations
+
 def part_1(banks):
   sum = 0
   for bank in banks:
@@ -19,10 +21,18 @@ def part_1(banks):
   return sum
 
 def part_2(banks):
+  sum = 0
+  for bank in banks:
+    bateries = [int(batery) for batery in bank]
+    print(bateries)
+    joltage_combinations = combinations(bateries, 12)
+    greatest_joltage = next(joltage_combinations)
+    print(greatest_joltage)
+    break
   return None
 
 if __name__ == "__main__":
   with open('input.txt', 'r') as input:
     banks = [i.rstrip() for i in input.readlines()]
 
-  print(part_1(banks))
+  print(part_2(banks))

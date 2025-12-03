@@ -23,13 +23,15 @@ def part_1(banks):
 def part_2(banks):
   sum = 0
   for bank in banks:
-    bateries = [int(batery) for batery in bank]
-    print(bateries)
-    joltage_combinations = combinations(bateries, 12)
-    greatest_joltage = next(joltage_combinations)
-    print(greatest_joltage)
-    break
-  return None
+    joltage_combinations = combinations(bank, 12)
+    greatest_joltage = int(''.join(next(joltage_combinations)))
+    for joltage_combination in joltage_combinations:
+      current_joltage = int(''.join(joltage_combination))
+      if current_joltage > greatest_joltage:
+        greatest_joltage = current_joltage
+    sum += greatest_joltage
+
+  return sum
 
 if __name__ == "__main__":
   with open('input.txt', 'r') as input:

@@ -20,16 +20,29 @@ def part_1(banks):
     
   return sum
 
+def find_joltage(joltages, missing=12):
+  selected = ''
+  if missing == len(joltages):
+    return joltages
+  elif missing == 0:
+    return '';
+  else:
+    max = joltages[0]
+    max_index = 0
+    for j in enumerate(joltages[:len(joltages) - missing + 1]):
+      if int(j[1]) > int(max):
+        max = j[1]
+        max_index = j[0]
+    
+    selected += max
+    
+    return selected + find_joltage(joltages[max_index + 1:], missing - 1)
+
 def part_2(banks):
   sum = 0
+
   for bank in banks:
-    joltage_combinations = combinations(bank, 12)
-    greatest_joltage = int(''.join(next(joltage_combinations)))
-    for joltage_combination in joltage_combinations:
-      current_joltage = int(''.join(joltage_combination))
-      if current_joltage > greatest_joltage:
-        greatest_joltage = current_joltage
-    sum += greatest_joltage
+    sum += int(find_joltage(bank))
 
   return sum
 

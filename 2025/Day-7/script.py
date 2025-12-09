@@ -1,4 +1,4 @@
-import pprint
+import time
 
 tachyon_manifold = []
 
@@ -19,21 +19,21 @@ def part_1():
 
 def timelines(point):
   current_point = point
-  for i in range(point[0], len(tachyon_manifold)):
-    
-  if point[0] == len(tachyon_manifold) - 1:
-    return 1
-  elif point[1] < 0 or point[1] >= len(tachyon_manifold[0]):
+  if point[1] < 0 or point[1] >= len(tachyon_manifold[0]):
     return 0
-  elif tachyon_manifold[point[0]][point[1]] == '^':
-    return timelines((point[0] + 1, point[1] - 1)) + timelines((point[0] + 1, point[1] + 1))
-  else:
-    return timelines((point[0] + 1, point[1]))
+  while current_point[0] < len(tachyon_manifold):
+    if tachyon_manifold[current_point[0]][current_point[1]] == '^':
+      return timelines((current_point[0] + 1, current_point[1] - 1)) + timelines((current_point[0] + 1, current_point[1] + 1))
+    current_point = (current_point[0] + 1, current_point[1])
+  return 1
 
 def part_2():
   s = (0, tachyon_manifold[0].index('S'))
   
-  return timelines(s)
+  start_time = time.time()
+  timelines_count = timelines(s)
+  print("--- Elapsed %s seconds ---" % (time.time() - start_time))
+  return timelines_count
 
 if __name__ == "__main__":
   with open('input.txt', 'r') as input:

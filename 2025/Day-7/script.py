@@ -17,6 +17,16 @@ def part_1():
 
   return splits
 
+memory = {}
+def memorize(f):    
+  def inner(point):
+    if point not in memory:
+      memory[point] = f(point)
+    return memory[point]
+
+  return inner
+
+@memorize
 def timelines(point):
   current_point = point
   if point[1] < 0 or point[1] >= len(tachyon_manifold[0]):
@@ -30,9 +40,7 @@ def timelines(point):
 def part_2():
   s = (0, tachyon_manifold[0].index('S'))
   
-  start_time = time.time()
   timelines_count = timelines(s)
-  print("--- Elapsed %s seconds ---" % (time.time() - start_time))
   return timelines_count
 
 if __name__ == "__main__":
